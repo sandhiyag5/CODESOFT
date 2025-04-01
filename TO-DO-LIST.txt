@@ -1,9 +1,4 @@
-﻿TO-DO-LIST
-
-
-
-
-import json
+﻿import json
 import os
 
 
