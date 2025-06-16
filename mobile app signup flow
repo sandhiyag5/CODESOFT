@@ -1,0 +1,72 @@
+// Basic Flutter Widget for a signup input field with validation
+import 'package:flutter/material.dart';
+
+class EmailInputField extends StatefulWidget {
+  final TextEditingController controller;
+  final String labelText;
+
+  EmailInputField({required this.controller, required this.labelText});
+
+  @override
+  _EmailInputFieldState createState() => _EmailInputFieldState();
+}
+
+class _EmailInputFieldState extends State<EmailInputField> {
+  String? _errorText;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.controller.addListener(_validateEmail);
+  }
+
+  @override
+  void dispose() {
+    widget.controller.removeListener(_validateEmail);
+    super.dispose();
+  }
+
+  void _validateEmail() {
+    setState(() {
+      if (widget.controller.text.isEmpty) {
+        _errorText = 'Email cannot be empty';
+      } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(widget.controller.text)) {
+        _errorText = 'Enter a valid email address';
+      } else {
+        _errorText = null;
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      controller: widget.controller,
+      keyboardType: TextInputType.emailAddress,
+      decoration: InputDecoration(
+        labelText: widget.labelText,
+        errorText: _errorText,
+        border: OutlineInputBorder(),
+      ),
+    );
+  }
+}
+
+// Example usage in a main form widget:
+// class SignupForm extends StatefulWidget { ... }
+//   TextEditingController _emailController = TextEditingController();
+//   // ... other controllers
+//   EmailInputField(controller: _emailController, labelText: 'Email Address'),
+//   ElevatedButton(
+//     onPressed: () {
+//       // Perform final validation and submit
+//       if (_emailController.text.isNotEmpty &&
+//           RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(_emailController.text)) {
+//         // Submit data
+//         print('Email is valid: ${_emailController.text}');
+//       } else {
+//         print('Please fix errors');
+//       }
+//     },
+//     child: Text('Sign Up'),
+//   )
